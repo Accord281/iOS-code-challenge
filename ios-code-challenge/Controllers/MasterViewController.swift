@@ -97,6 +97,7 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
             guard let strongSelf = self,
                 let dataSource = strongSelf.dataSource,
                 let searchResults = strongSelf.tempbusinesses else {
+                //let searchResults = searchResult?.businesses.sorted(by: { $0.distance.decimalValue < $1.distance.decimalValue }) else {
                     return
             }
             self?.businesses = searchResults
