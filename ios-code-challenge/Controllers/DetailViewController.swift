@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 class DetailViewController: UIViewController {
 
@@ -63,5 +64,30 @@ class DetailViewController: UIViewController {
     @objc private func onFavoriteBarButtonSelected(_ sender: Any) {
         _favorite.toggle()
         updateFavoriteBarButtonState()
+    }
+    
+    @IBAction func GetDirections(_ sender: Any) {
+        guard let item = detailItem else {
+            return
+        }
+        
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(item.address) { (placemarks, error) in
+            if error == nil {
+                if let placemark = placemarks?[0] {
+                    if let coordinate = placemark.location?.coordinate {
+                        let mkPlacemark = MKPlacemark(coordinate: coordinate)
+
+                        let mapItem = MKMapItem(placemark: mkPlacemark)
+
+                        mapItem.name = item.name
+
+                        let launchOptions = [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving]
+
+                        mapItem.openInMaps(launchOptions: launchOptions)
+                    }
+                }
+            }
+        }
     }
 }

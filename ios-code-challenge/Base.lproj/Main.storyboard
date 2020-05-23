@@ -93,6 +93,13 @@
                                             </label>
                                         </subviews>
                                     </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KYZ-Ck-Z0K">
+                                        <rect key="frame" x="0.0" y="246" width="359" height="30"/>
+                                        <state key="normal" title="Directions"/>
+                                        <connections>
+                                            <action selector="GetDirections:" destination="JEX-9P-axG" eventType="touchUpInside" id="aUF-1M-gz8"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="RPk-xP-hkf" firstAttribute="leading" secondItem="fel-E7-3KC" secondAttribute="leading" id="C0e-jO-wuW"/>
