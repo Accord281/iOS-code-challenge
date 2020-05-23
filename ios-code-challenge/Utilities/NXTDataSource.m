@@ -75,7 +75,7 @@
     id object = self.mutableObjects[indexPath.row];
     
     if(self.tableViewDidSelectCell) {
-        self.tableViewDidSelectCell(object);
+        self.tableViewDidSelectCell();
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

@@ -22,6 +22,11 @@ class MasterViewController: UITableViewController {
             guard let strongSelf = self else { return }
             strongSelf.tableView.reloadData()
         }
+        
+        dataSource.tableViewDidSelectCell = {
+            self.performSegue(withIdentifier: "showDetail", sender: nil)
+        }
+        
         return dataSource
     }()
 
@@ -91,14 +96,15 @@ class MasterViewController: UITableViewController {
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
-//            guard let indexPath = tableView.indexPathForSelectedRow,
-//                let controller = segue.destination as? DetailViewController else {
-//                return
-//            }
-//            let object = objects[indexPath.row]
-//            controller.setDetailItem(newDetailItem: object)
-//            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem
-//            controller.navigationItem.leftItemsSupplementBackButton = true
+            guard let indexPath = tableView.indexPathForSelectedRow,
+                let navcontroller = segue.destination as? UINavigationController,
+                let controller = navcontroller.topViewController as? DetailViewController else {
+                return
+            }
+            let object = self.businesses[indexPath.row]
+            controller.setDetailItem(newDetailItem: object)
+            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem
+            controller.navigationItem.leftItemsSupplementBackButton = true
         }
     }
 

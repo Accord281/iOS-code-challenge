@@ -10,10 +10,15 @@ import UIKit
 
 class DetailViewController: UIViewController {
 
-    @IBOutlet weak var detailDescriptionLabel: UILabel!
+    @IBOutlet weak var thumbnailImage: UIImageView!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var categoriesLabel: UILabel!
+    @IBOutlet weak var ratingLabel: UILabel!
+    @IBOutlet weak var priceLabel: UILabel!
+    
     lazy private var favoriteBarButtonItem: UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "Star-Outline"), style: .plain, target: self, action: #selector(onFavoriteBarButtonSelected(_:)))
 
-    @objc var detailItem: NSDate?
+    @objc var detailItem: YLPBusiness?
     
     private var _favorite: Bool = false
     private var isFavorite: Bool {
@@ -31,13 +36,24 @@ class DetailViewController: UIViewController {
     
     private func configureView() {
         guard let detailItem = detailItem else { return }
-        detailDescriptionLabel.text = detailItem.description
+        
+        thumbnailImage.image = UIImage(named: detailItem.thumbnail)
+        categoriesLabel?.text = detailItem.categories
+        nameLabel?.text = detailItem.name
+        ratingLabel?.text = detailItem.rating.description + " (" + detailItem.reviewCount.description + " reviews)"
+        
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.numberStyle = .currency
+        if let formattedPrice = formatter.string(from: detailItem.price as NSNumber) {
+            priceLabel.text = "\(formattedPrice)"
+        }
     }
     
-    func setDetailItem(newDetailItem: NSDate) {
+    func setDetailItem(newDetailItem: YLPBusiness) {
         guard detailItem != newDetailItem else { return }
         detailItem = newDetailItem
-        configureView()
+        //configureView()
     }
     
     private func updateFavoriteBarButtonState() {

@@ -21,7 +21,7 @@
     
 @property (nonatomic, readonly) NSArray *objects;
 @property (nonatomic, copy) void(^tableViewDidReceiveData)(void);
-@property (nonatomic, copy) void(^tableViewDidSelectCell)(id object);
+@property (nonatomic, copy) void(^tableViewDidSelectCell)(void);
 @property (nonatomic, copy) void(^tableViewDidSelectAccessoryView)(id object);
 @property (nonatomic, copy) void(^tableViewDidScroll)(void);
     
