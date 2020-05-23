@@ -7,10 +7,13 @@
 //
 
 import UIKit
+import MapKit
 
-class MasterViewController: UITableViewController {
+class MasterViewController: UITableViewController, CLLocationManagerDelegate {
     
     var detailViewController: DetailViewController?
+
+    var locationManager = CLLocationManager()
     
     var businesses: [YLPBusiness] = []
     var tempbusinesses: [YLPBusiness]?
@@ -36,7 +39,6 @@ class MasterViewController: UITableViewController {
         tableView.dataSource = dataSource
         tableView.delegate = dataSource
         
-        let query = YLPSearchQuery(location: "5550 West Executive Dr. Tampa, FL 33609")
         //Sample data for testing
         tempbusinesses = [
             YLPBusiness(attributes: [
@@ -76,6 +78,21 @@ class MasterViewController: UITableViewController {
 
         //sort by distance
         tempbusinesses?.sort(by: { $0.distance.decimalValue < $1.distance.decimalValue })
+        
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.requestWhenInUseAuthorization()
+        determineMyCurrentLocation()
+        
+        let currentLocation = locationManager.location
+        var locationString: String = "5550 West Executive Dr. Tampa, FL 33609"
+        
+        if let location = currentLocation {
+            locationString = location.coordinate.latitude.description + "," + location.coordinate.longitude.description
+        }
+        
+        let query = YLPSearchQuery(location: locationString)
         AFYelpAPIClient.shared().search(with: query, completionHandler: { [weak self] (searchResult, error) in
             guard let strongSelf = self,
                 let dataSource = strongSelf.dataSource,
@@ -106,6 +123,18 @@ class MasterViewController: UITableViewController {
             controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem
             controller.navigationItem.leftItemsSupplementBackButton = true
         }
+    }
+    
+    func determineMyCurrentLocation() {
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        // Call stopUpdatingLocation() to stop listening for location updates,
+        // other wise this function will be called every time when user location changes.
+        manager.stopUpdatingLocation()
     }
 
 }
