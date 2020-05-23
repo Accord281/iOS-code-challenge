@@ -15,6 +15,10 @@
 {
     // Business Name
     self.nameLabel.text = business.name;
+    self.categoriesLabel.text = business.categories;
+    self.ratingLabel.text =[NSString stringWithFormat:@"%@ (%@ reviews)", business.rating.description, business.reviewCount.description];
+    self.distanceLabel.text = business.distance.description;
+    self.thumbnailImage.image = [UIImage imageNamed:business.thumbnail];
 }
 
 #pragma mark - NXTBindingDataForObjectDelegate
