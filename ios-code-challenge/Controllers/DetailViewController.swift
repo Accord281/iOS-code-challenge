@@ -11,6 +11,7 @@ import MapKit
 
 class DetailViewController: UIViewController {
 
+    @IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet weak var thumbnailImage: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var categoriesLabel: UILabel!
@@ -36,19 +37,23 @@ class DetailViewController: UIViewController {
     }
     
     private func configureView() {
-        guard let detailItem = detailItem else { return }
+        guard let detailItem = detailItem else {
+            mainStackView.isHidden = true
+            return
+        }
         
-        thumbnailImage.image = UIImage(named: detailItem.thumbnail)
+        guard let imageUrl = URL(string: detailItem.thumbnail),
+            let data = try? Data(contentsOf: imageUrl) else { return }
+        DispatchQueue.main.async {
+            self.thumbnailImage.image = UIImage(data: data)
+        }
+        
         categoriesLabel?.text = detailItem.categories
         nameLabel?.text = detailItem.name
         ratingLabel?.text = detailItem.rating.description + " (" + detailItem.reviewCount.description + " reviews)"
+        priceLabel.text = detailItem.price
         
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .currency
-        if let formattedPrice = formatter.string(from: detailItem.price as NSNumber) {
-            priceLabel.text = "\(formattedPrice)"
-        }
+        
     }
     
     func setDetailItem(newDetailItem: YLPBusiness) {
@@ -71,23 +76,19 @@ class DetailViewController: UIViewController {
             return
         }
         
-        let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(item.address) { (placemarks, error) in
-            if error == nil {
-                if let placemark = placemarks?[0] {
-                    if let coordinate = placemark.location?.coordinate {
-                        let mkPlacemark = MKPlacemark(coordinate: coordinate)
+        let latitude: CLLocationDegrees = CLLocationDegrees.init(Double(truncating: item.latitude))
+        let longitude: CLLocationDegrees = CLLocationDegrees.init(Double(truncating: item.longitude))
+        
+        let coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D.init(latitude: latitude, longitude: longitude)
+        
+        let mkPlacemark = MKPlacemark(coordinate: coordinate)
 
-                        let mapItem = MKMapItem(placemark: mkPlacemark)
+        let mapItem = MKMapItem(placemark: mkPlacemark)
 
-                        mapItem.name = item.name
+        mapItem.name = item.name
 
-                        let launchOptions = [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving]
+        let launchOptions = [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving]
 
-                        mapItem.openInMaps(launchOptions: launchOptions)
-                    }
-                }
-            }
-        }
+        mapItem.openInMaps(launchOptions: launchOptions)
     }
 }

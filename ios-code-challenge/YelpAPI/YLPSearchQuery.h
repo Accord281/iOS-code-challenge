@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface YLPSearchQuery : NSObject
 
 - (instancetype)initWithLocation:(NSString *)location;
+- (instancetype)initWithLatitude:(NSString *)latitude longitude:(NSString *)longitude limit:(NSString *) limit offset:(NSString *) offset sortby:(NSString *) sortby;
 - (NSDictionary *)parameters;
 
 /**
@@ -34,6 +35,31 @@ NS_ASSUME_NONNULL_BEGIN
  *  error may be returned. The max value is 40000 meters (25 miles).
  */
 @property (nonatomic, assign) double radiusFilter;
+
+/**
+ *  Optional. Search via location
+ */
+@property (nonatomic, copy, nullable) NSString *latitude;
+
+/**
+ *  Optional. Search via location
+ */
+@property (nonatomic, copy, nullable) NSString *longitude;
+
+/**
+ *  Optional. Limit number of results
+ */
+@property (nonatomic, copy, nullable) NSString *limit;
+
+/**
+ *  Optional. Offset number of results
+ */
+@property (nonatomic, copy, nullable) NSString *offset;
+
+/**
+ *  Optional. Sort the results
+ */
+@property (nonatomic, copy, nullable) NSString *sortby;
 
 @end
 

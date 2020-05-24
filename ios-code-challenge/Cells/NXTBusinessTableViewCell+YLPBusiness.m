@@ -19,6 +19,15 @@
     self.ratingLabel.text =[NSString stringWithFormat:@"%@ (%@ reviews)", business.rating.description, business.reviewCount.description];
     self.distanceLabel.text = business.distance.description;
     self.thumbnailImage.image = [UIImage imageNamed:business.thumbnail];
+    
+    dispatch_async(dispatch_get_global_queue(0,0), ^{
+        NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: business.thumbnail]];
+        if ( data == nil )
+            return;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.thumbnailImage.image = [UIImage imageWithData: data];
+        });
+    });
 }
 
 #pragma mark - NXTBindingDataForObjectDelegate

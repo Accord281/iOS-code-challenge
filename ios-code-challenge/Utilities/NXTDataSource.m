@@ -57,6 +57,10 @@
     
     [cell bindingDataForObject:object];
     
+    if (indexPath.row == self.mutableObjects.count - 1) { // last cell
+        self.tableViewDidScrollToBottom();
+    }
+    
     return (UITableViewCell *)cell;
 }
     

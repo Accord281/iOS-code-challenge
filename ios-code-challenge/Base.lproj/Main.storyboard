@@ -121,6 +121,7 @@
                     <navigationItem key="navigationItem" title="Detail" id="mOI-FS-AaM"/>
                     <connections>
                         <outlet property="categoriesLabel" destination="em7-eO-MBU" id="a6v-Hd-JBC"/>
+                        <outlet property="mainStackView" destination="fel-E7-3KC" id="ETN-59-VVJ"/>
                         <outlet property="nameLabel" destination="Odz-A2-wpn" id="f71-aJ-lpF"/>
                         <outlet property="priceLabel" destination="gu7-Hv-qHW" id="mIr-ti-8Qm"/>
                         <outlet property="ratingLabel" destination="SyB-ub-ZCj" id="Y4m-BG-RSA"/>

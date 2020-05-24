@@ -25,9 +25,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, copy) NSString *name;
 
 /**
- *  Address of this business.
+ *  Latitude of this business.
  */
-@property (nonatomic, readonly, copy) NSString *address;
+@property (nonatomic, readonly, copy) NSNumber *latitude;
+
+/**
+ *  Longitude of this business.
+ */
+@property (nonatomic, readonly, copy) NSNumber *longitude;
 
 /**
  *  Categories of this business.
@@ -45,9 +50,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, copy) NSNumber *reviewCount;
 
 /**
- *  Price of something? for this business.
+ *  Price Level for this business.
  */
-@property (nonatomic, readonly, copy) NSNumber *price;
+@property (nonatomic, readonly, copy) NSString *price;
 
 /**
  *  Distance of this business.

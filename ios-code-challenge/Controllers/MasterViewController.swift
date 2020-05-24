@@ -30,6 +30,10 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
             self.performSegue(withIdentifier: "showDetail", sender: nil)
         }
         
+        dataSource.tableViewDidScrollToBottom = {
+            self.loadMoreBusinesses()
+        }
+        
         return dataSource
     }()
 
@@ -39,71 +43,13 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
         tableView.dataSource = dataSource
         tableView.delegate = dataSource
         
-        //Sample data for testing
-        tempbusinesses = [
-            YLPBusiness(attributes: [
-                "identifier":"A123",
-                "name": "Starbucks",
-                "categories": "coffee,food",
-                "rating": 4.5,
-                "reviewCount": 7,
-                "distance": 8.7,
-                "price": 8.50,
-                "thumbnail": "Starbucks",
-                "address": "1508 N Westshore Blvd, Tampa, FL 33607"
-            ]),
-            YLPBusiness(attributes: [
-                "identifier":"A125",
-                "name": "Caribou",
-                "categories": "coffee",
-                "rating": 4.7,
-                "reviewCount": 13,
-                "distance": 8.9,
-                "price": 6.30,
-                "thumbnail": "Caribou",
-                "address": "5003 E Fowler Ave, Tampa, FL 33617"
-            ]),
-            YLPBusiness(attributes: [
-                "identifier":"A126",
-                "name": "McDonalds",
-                "categories": "coffee,food,restaurant",
-                "rating": 3.5,
-                "reviewCount": 17,
-                "distance": 8.8,
-                "price": 2.00,
-                "thumbnail": "McDonalds",
-                "address": "2101 E 13th Ave, Tampa, FL 33605"
-            ])
-        ]
-
-        //sort by distance
-        tempbusinesses?.sort(by: { $0.distance.decimalValue < $1.distance.decimalValue })
-        
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.requestWhenInUseAuthorization()
         determineMyCurrentLocation()
         
-        let currentLocation = locationManager.location
-        var locationString: String = "5550 West Executive Dr. Tampa, FL 33609"
-        
-        if let location = currentLocation {
-            locationString = location.coordinate.latitude.description + "," + location.coordinate.longitude.description
-        }
-        
-        let query = YLPSearchQuery(location: locationString)
-        AFYelpAPIClient.shared().search(with: query, completionHandler: { [weak self] (searchResult, error) in
-            guard let strongSelf = self,
-                let dataSource = strongSelf.dataSource,
-                let searchResults = strongSelf.tempbusinesses else {
-                //let searchResults = searchResult?.businesses.sorted(by: { $0.distance.decimalValue < $1.distance.decimalValue }) else {
-                    return
-            }
-            self?.businesses = searchResults
-            dataSource.setObjects(self?.businesses);
-            strongSelf.tableView.reloadData()
-        })
+        loadMoreBusinesses()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -124,6 +70,31 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
             controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem
             controller.navigationItem.leftItemsSupplementBackButton = true
         }
+    }
+    
+    func loadMoreBusinesses() {
+        let currentLocation = locationManager.location
+        var locationString: String = "5550 West Executive Dr. Tampa, FL 33609"
+        
+        var query: YLPSearchQuery
+        
+        if let location = currentLocation {
+            locationString = location.coordinate.latitude.description + "," + location.coordinate.longitude.description
+            query = YLPSearchQuery(latitude: location.coordinate.latitude.description, longitude: location.coordinate.longitude.description, limit: "50", offset: dataSource?.objects.count.description ?? "0", sortby: "distance")
+        } else {
+            query = YLPSearchQuery(location: locationString)
+        }
+        
+        AFYelpAPIClient.shared().search(with: query, completionHandler: { [weak self] (searchResult, error) in
+            guard let strongSelf = self,
+                let dataSource = strongSelf.dataSource,
+                let searchResults = searchResult?.businesses.sorted(by: { $0.distance.decimalValue < $1.distance.decimalValue }) else {
+                    return
+            }
+            self?.businesses.append(contentsOf: searchResults)
+            dataSource.setObjects(self?.businesses);
+            strongSelf.tableView.reloadData()
+        })
     }
     
     func determineMyCurrentLocation() {

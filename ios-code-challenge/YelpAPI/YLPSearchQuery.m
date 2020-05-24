@@ -24,6 +24,19 @@
     
     return self;
 }
+
+- (instancetype)initWithLatitude:(NSString *)latitude longitude:(NSString *)longitude limit:(NSString *) limit offset:(NSString *) offset sortby:(NSString *) sortby
+{
+    if(self = [super init]) {
+        _latitude = latitude;
+        _longitude = longitude;
+        _limit = limit;
+        _offset = offset;
+        _sortby = _sortby;
+    }
+    
+    return self;
+}
 - (NSDictionary *)parameters
 {
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
@@ -34,6 +47,26 @@
     
     if(self.term) {
         params[@"term"] = self.term;
+    }
+    
+    if (self.latitude) {
+        params[@"latitude"] = self.latitude;
+    }
+    
+    if (self.longitude) {
+        params[@"longitude"] = self.longitude;
+    }
+    
+    if (self.limit) {
+        params[@"limit"] = self.limit;
+    }
+    
+    if (self.offset) {
+        params[@"offset"] = self.offset;
+    }
+    
+    if (self.sortby) {
+        params[@"sort_by"] = self.sortby;
     }
     
     if(self.radiusFilter > 0) {
