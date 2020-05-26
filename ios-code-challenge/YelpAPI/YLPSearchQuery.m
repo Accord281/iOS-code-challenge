@@ -16,14 +16,14 @@
 
 @implementation YLPSearchQuery
 
-- (instancetype)initWithLocation:(NSString *)location
-{
-    if(self = [super init]) {
-        _location = location;
-    }
-    
-    return self;
-}
+//- (instancetype)initWithLocation:(NSString *)location
+//{
+//    if(self = [super init]) {
+//        _location = location;
+//    }
+//
+//    return self;
+//}
 
 - (instancetype)initWithLatitude:(NSString *)latitude longitude:(NSString *)longitude limit:(NSString *) limit offset:(NSString *) offset sortby:(NSString *) sortby
 {
@@ -32,7 +32,7 @@
         _longitude = longitude;
         _limit = limit;
         _offset = offset;
-        _sortby = _sortby;
+        _sortby = sortby;
     }
     
     return self;

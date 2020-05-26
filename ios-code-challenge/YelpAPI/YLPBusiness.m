@@ -13,10 +13,11 @@
 - (instancetype)initWithAttributes:(NSDictionary *)attributes
 {
     if(self = [super init]) {
+        
         _identifier = attributes[@"id"];
         _name = attributes[@"name"];
-        _latitude = [self.class getLatitudeFromYelp:attributes];
-        _longitude = [self.class getLongitudeFromYelp:attributes];
+        _latitude = [self.class getCoordinateFromYelp:@"latitude" dictionary:attributes];
+        _longitude = [self.class getCoordinateFromYelp:@"longitude" dictionary:attributes];
         _categories = [self.class getCategories:attributes];
         _rating = (attributes[@"rating"]);
         _reviewCount = attributes[@"review_count"];
@@ -28,14 +29,9 @@
     return self;
 }
 
-+ (NSString *) getLatitudeFromYelp:(NSDictionary *)attributes {
++ (NSNumber *) getCoordinateFromYelp:(NSString *) coordinatetype dictionary:(NSDictionary *)attributes {
     NSDictionary *coordinates = attributes[@"coordinates"];
-    return [coordinates objectForKey:@"latitude"];
-}
-
-+ (NSString *) getLongitudeFromYelp:(NSDictionary *)attributes {
-    NSDictionary *coordinates = attributes[@"coordinates"];
-    return [coordinates objectForKey:@"longitude"];
+    return [coordinates objectForKey:coordinatetype];
 }
 
 + (NSString *) getCategories:(NSDictionary *)attributes {

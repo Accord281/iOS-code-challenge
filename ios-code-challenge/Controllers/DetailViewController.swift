@@ -37,13 +37,18 @@ class DetailViewController: UIViewController {
     }
     
     private func configureView() {
+        //When app is first loaded, no business is selected, so hide the stack view.
         guard let detailItem = detailItem else {
             mainStackView.isHidden = true
             return
         }
         
+        //Load the thumbnail image from the URL provided.
         guard let imageUrl = URL(string: detailItem.thumbnail),
-            let data = try? Data(contentsOf: imageUrl) else { return }
+            let data = try? Data(contentsOf: imageUrl) else {
+                return
+        }
+        
         DispatchQueue.main.async {
             self.thumbnailImage.image = UIImage(data: data)
         }
@@ -52,8 +57,6 @@ class DetailViewController: UIViewController {
         nameLabel?.text = detailItem.name
         ratingLabel?.text = detailItem.rating.description + " (" + detailItem.reviewCount.description + " reviews)"
         priceLabel.text = detailItem.price
-        
-        
     }
     
     func setDetailItem(newDetailItem: YLPBusiness) {
@@ -76,6 +79,7 @@ class DetailViewController: UIViewController {
             return
         }
         
+        //Use the item's coordinates to launch the maps app for directions to its location
         let latitude: CLLocationDegrees = CLLocationDegrees.init(Double(truncating: item.latitude))
         let longitude: CLLocationDegrees = CLLocationDegrees.init(Double(truncating: item.longitude))
         
