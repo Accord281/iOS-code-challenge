@@ -7,13 +7,20 @@
 //
 
 import UIKit
+import MapKit
 
 class DetailViewController: UIViewController {
 
-    @IBOutlet weak var detailDescriptionLabel: UILabel!
+    @IBOutlet weak var mainStackView: UIStackView!
+    @IBOutlet weak var thumbnailImage: UIImageView!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var categoriesLabel: UILabel!
+    @IBOutlet weak var ratingLabel: UILabel!
+    @IBOutlet weak var priceLabel: UILabel!
+    
     lazy private var favoriteBarButtonItem: UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "Star-Outline"), style: .plain, target: self, action: #selector(onFavoriteBarButtonSelected(_:)))
 
-    @objc var detailItem: NSDate?
+    @objc var detailItem: YLPBusiness?
     
     private var _favorite: Bool = false
     private var isFavorite: Bool {
@@ -30,14 +37,32 @@ class DetailViewController: UIViewController {
     }
     
     private func configureView() {
-        guard let detailItem = detailItem else { return }
-        detailDescriptionLabel.text = detailItem.description
+        //When app is first loaded, no business is selected, so hide the stack view.
+        guard let detailItem = detailItem else {
+            mainStackView.isHidden = true
+            return
+        }
+        
+        //Load the thumbnail image from the URL provided.
+        guard let imageUrl = URL(string: detailItem.thumbnail),
+            let data = try? Data(contentsOf: imageUrl) else {
+                return
+        }
+        
+        DispatchQueue.main.async {
+            self.thumbnailImage.image = UIImage(data: data)
+        }
+        
+        categoriesLabel?.text = detailItem.categories
+        nameLabel?.text = detailItem.name
+        ratingLabel?.text = detailItem.rating.description + " (" + detailItem.reviewCount.description + " reviews)"
+        priceLabel.text = detailItem.price
     }
     
-    func setDetailItem(newDetailItem: NSDate) {
+    func setDetailItem(newDetailItem: YLPBusiness) {
         guard detailItem != newDetailItem else { return }
         detailItem = newDetailItem
-        configureView()
+        //configureView()
     }
     
     private func updateFavoriteBarButtonState() {
@@ -47,5 +72,27 @@ class DetailViewController: UIViewController {
     @objc private func onFavoriteBarButtonSelected(_ sender: Any) {
         _favorite.toggle()
         updateFavoriteBarButtonState()
+    }
+    
+    @IBAction func GetDirections(_ sender: Any) {
+        guard let item = detailItem else {
+            return
+        }
+        
+        //Use the item's coordinates to launch the maps app for directions to its location
+        let latitude: CLLocationDegrees = CLLocationDegrees.init(Double(truncating: item.latitude))
+        let longitude: CLLocationDegrees = CLLocationDegrees.init(Double(truncating: item.longitude))
+        
+        let coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D.init(latitude: latitude, longitude: longitude)
+        
+        let mkPlacemark = MKPlacemark(coordinate: coordinate)
+
+        let mapItem = MKMapItem(placemark: mkPlacemark)
+
+        mapItem.name = item.name
+
+        let launchOptions = [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving]
+
+        mapItem.openInMaps(launchOptions: launchOptions)
     }
 }

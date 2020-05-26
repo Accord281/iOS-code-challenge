@@ -57,6 +57,10 @@
     
     [cell bindingDataForObject:object];
     
+    if (indexPath.row == self.mutableObjects.count - 1) { // last cell
+        self.tableViewDidScrollToBottom();
+    }
+    
     return (UITableViewCell *)cell;
 }
     
@@ -75,7 +79,7 @@
     id object = self.mutableObjects[indexPath.row];
     
     if(self.tableViewDidSelectCell) {
-        self.tableViewDidSelectCell(object);
+        self.tableViewDidSelectCell();
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

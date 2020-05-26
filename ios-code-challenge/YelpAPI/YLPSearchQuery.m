@@ -16,10 +16,23 @@
 
 @implementation YLPSearchQuery
 
-- (instancetype)initWithLocation:(NSString *)location
+//- (instancetype)initWithLocation:(NSString *)location
+//{
+//    if(self = [super init]) {
+//        _location = location;
+//    }
+//
+//    return self;
+//}
+
+- (instancetype)initWithLatitude:(NSString *)latitude longitude:(NSString *)longitude limit:(NSString *) limit offset:(NSString *) offset sortby:(NSString *) sortby
 {
     if(self = [super init]) {
-        _location = location;
+        _latitude = latitude;
+        _longitude = longitude;
+        _limit = limit;
+        _offset = offset;
+        _sortby = sortby;
     }
     
     return self;
@@ -34,6 +47,26 @@
     
     if(self.term) {
         params[@"term"] = self.term;
+    }
+    
+    if (self.latitude) {
+        params[@"latitude"] = self.latitude;
+    }
+    
+    if (self.longitude) {
+        params[@"longitude"] = self.longitude;
+    }
+    
+    if (self.limit) {
+        params[@"limit"] = self.limit;
+    }
+    
+    if (self.offset) {
+        params[@"offset"] = self.offset;
+    }
+    
+    if (self.sortby) {
+        params[@"sort_by"] = self.sortby;
     }
     
     if(self.radiusFilter > 0) {
